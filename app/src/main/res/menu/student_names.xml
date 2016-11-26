@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/add_quizz"
+        android:title="Add Quizz"
+        android:orderInCategory="100"
+        ></item>
+
+    <item android:orderInCategory="100"
+android:id="@+id/add_absence"
+        android:title="Add Absence"></item>
+
+    <item android:title="Select Name"
+        android:id="@+id/select_name"
+        android:orderInCategory="100"></item>
+
+
+
+
+
+
+
+
+</menu>

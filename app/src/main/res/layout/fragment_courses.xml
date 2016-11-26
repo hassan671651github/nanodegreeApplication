@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/courses_layout"
+    tools:context=".CoursesFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_gridView"
+        android:layout_gravity="left|center_vertical"
+
+
+
+        android:layout_margin="10dp"
+
+
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp"
+
+        >
+
+</GridView>
+        android:outlineProvider="bounds" />
+</FrameLayout>

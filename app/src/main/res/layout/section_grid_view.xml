@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".75">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/sectionImg"
+            android:layout_weight=".75"
+            android:src="@drawable/section" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/location"
+                android:layout_gravity="center_horizontal|bottom"
+                android:textSize="35dp"
+                android:textColor="#040404"
+                android:text=" "
+
+
+
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/day"
+                android:layout_gravity="center_horizontal|top"
+                android:textSize="35dp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:text=" " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=" "
+                android:id="@+id/Time"
+                android:layout_gravity="center"
+                android:textColor="#000000"
+                android:textSize="35dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="sectionNameGrid"
+        android:id="@+id/sectionName"
+        android:layout_weight=".25"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="30dp"
+        android:textIsSelectable="false" />
+</LinearLayout>

@@ -1,0 +1,61 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.ahmed.teachercalender.StudentDetails">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Quizzes"
+            android:id="@+id/textView"
+            android:layout_weight=".075"
+            android:textColor="#ea1212"
+            android:textSize="30dp" />
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/gridView3"
+            android:layout_weight=".4"
+            android:numColumns="auto_fit"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/imageView2"
+            android:layout_weight=".05"
+            android:src="@drawable/divider2"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Absence"
+            android:id="@+id/textView2"
+            android:layout_weight=".075"
+            android:textSize="30dp"
+            android:textIsSelectable="true"
+            android:textColor="#e11313" />
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/gridView4"
+            android:layout_weight=".4"
+            android:numColumns="auto_fit"
+
+            />
+
+    </LinearLayout>
+</FrameLayout>
