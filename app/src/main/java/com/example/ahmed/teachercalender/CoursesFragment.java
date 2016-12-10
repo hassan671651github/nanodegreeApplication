@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.ahmed.teachercalender.Adapters.StudentNamesAdapter;
 import com.example.ahmed.teachercalender.Adapters.coursesAdapter;
+import com.example.ahmed.teachercalender.database.Student;
 import com.example.ahmed.teachercalender.database.Subject;
 import com.example.ahmed.teachercalender.Interfaces.*;
 import java.util.ArrayList;
@@ -93,7 +94,114 @@ public class CoursesFragment extends Fragment {
         }
     }
 
+private  void addStudentFunc(){
 
+    LayoutInflater linf = LayoutInflater.from(getActivity());
+    final View inflator = linf.inflate(R.layout.create_student, null);
+    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+    builder.setTitle("Add Student");
+    builder.setView(inflator);
+
+    final EditText name = (EditText) inflator.findViewById(R.id.create_student_name);
+    final Button save = (Button) inflator.findViewById(R.id.cretae_student_save);
+    final Button changeImg = (Button) inflator.findViewById(R.id.create_student_change_img);
+    final ImageView img = (ImageView) inflator.findViewById(R.id.create_student_img);
+    final EditText id=(EditText)inflator.findViewById(R.id.cretae_student_ID);
+    save.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(!name.getText().toString().trim().isEmpty() && !id.getText().toString().trim().isEmpty())
+            {
+                try {
+                    int x = Integer.parseInt(id.getText().toString().trim());
+                    Student.createStudent(x, name.getText().toString(), sqLiteDatabase);
+                    Toast.makeText(getActivity(), "student created succesfuly", Toast.LENGTH_SHORT).show();
+                    name.setText("");
+                    id.setText("");
+                }
+                catch (Exception ex){ Toast.makeText(getActivity(),"ID must be integer",Toast.LENGTH_SHORT).show();}
+            }
+            else
+                Toast.makeText(getActivity(),"YOU MUST FILL ALL FIELDS",Toast.LENGTH_SHORT).show();
+        }
+    });
+
+    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton)
+        {
+            if(!name.getText().toString().trim().isEmpty() && !id.getText().toString().trim().isEmpty())
+            {
+                try {
+                    int x = Integer.parseInt(id.getText().toString().trim());
+                    Student.createStudent(x, name.getText().toString(), sqLiteDatabase);
+                    Toast.makeText(getActivity(), "student created succesfuly", Toast.LENGTH_SHORT).show();
+                    name.setText("");
+                    id.setText("");
+                }
+                catch (Exception ex){ Toast.makeText(getActivity(),"ID must be integer",Toast.LENGTH_SHORT).show();}
+            }
+            else
+                Toast.makeText(getActivity(),"YOU MUST FILL ALL FIELDS",Toast.LENGTH_SHORT).show();
+
+        }
+    });
+
+    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+
+
+        }
+    });
+
+    builder.show();
+}
+   private  void createCourseFunc(){
+       LayoutInflater linf = LayoutInflater.from(getActivity());
+       final View inflator = linf.inflate(R.layout.create_course_layout, null);
+       AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+       builder.setTitle("Create Course");
+       builder.setView(inflator);
+
+       final EditText name = (EditText) inflator.findViewById(R.id.CourseName_createCourse);
+       final Button save = (Button) inflator.findViewById(R.id.Save_CreateCourse);
+       final Button changeImg = (Button) inflator.findViewById(R.id.ChangeImg_createCourse);
+       final ImageView img = (ImageView) inflator.findViewById(R.id.CourseImg_CreateCourse);
+       save.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               if(!name.getText().toString().trim().isEmpty()) {
+                   Subject.createSubject(name.getText().toString(), sqLiteDatabase);
+                   Toast.makeText(getActivity(),"course created succesfuly",Toast.LENGTH_SHORT).show();
+                   name.setText("");
+               }
+           }
+       });
+
+       builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+           public void onClick(DialogInterface dialog, int whichButton)
+           {
+               if(!name.getText().toString().trim().isEmpty()) {
+                   Subject.createSubject(name.getText().toString(), sqLiteDatabase);
+                   Toast.makeText(getActivity(),"course created succesfuly",Toast.LENGTH_SHORT).show();
+                   name.setText("");
+               }
+               LoadData();
+           }
+       });
+
+       builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+           public void onClick(DialogInterface dialog, int whichButton) {
+
+               LoadData();
+           }
+       });
+
+       builder.show();
+
+
+   }
 
     /******************************************************************************************/
     private OnFragmentInteractionListener mListener;
@@ -169,50 +277,15 @@ LoadData();
 
         if(item.getItemId()==R.id.create_course){
 
-            LayoutInflater linf = LayoutInflater.from(getActivity());
-            final View inflator = linf.inflate(R.layout.create_course_layout, null);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            createCourseFunc();
+        }
+        if(item.getItemId()==R.id.add_name){
 
-            builder.setTitle("Create Course");
-            builder.setView(inflator);
-
-            final EditText name = (EditText) inflator.findViewById(R.id.CourseName_createCourse);
-            final Button save = (Button) inflator.findViewById(R.id.Save_CreateCourse);
-            final Button changeImg = (Button) inflator.findViewById(R.id.ChangeImg_createCourse);
-            final ImageView img = (ImageView) inflator.findViewById(R.id.CourseImg_CreateCourse);
-            save.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!name.getText().toString().trim().isEmpty()) {
-                        Subject.createSubject(name.getText().toString(), sqLiteDatabase);
-                        Toast.makeText(getActivity(),"course created succesfuly",Toast.LENGTH_SHORT).show();
-                        name.setText("");
-                    }
-                }
-            });
-
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton)
-                {
-                    if(!name.getText().toString().trim().isEmpty()) {
-                        Subject.createSubject(name.getText().toString(), sqLiteDatabase);
-                        Toast.makeText(getActivity(),"course created succesfuly",Toast.LENGTH_SHORT).show();
-                        name.setText("");
-                    }
-                    LoadData();
-                }
-            });
-
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-
-                    LoadData();
-                }
-            });
-
-            builder.show();
+            addStudentFunc();
 
         }
+
+
 
 
 

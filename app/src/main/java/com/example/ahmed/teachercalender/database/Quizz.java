@@ -28,7 +28,7 @@ public class Quizz {
     private String name;
     private Date date;
     public static void createQuizz(String name, Date date, SQLiteDatabase sqLiteDatabase){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         ContentValues contentValues=new ContentValues();
 
         contentValues.put(Quizz.QUIZZ_DATE,dateFormat.format(date));

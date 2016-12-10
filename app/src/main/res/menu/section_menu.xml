@@ -10,7 +10,10 @@
         android:orderInCategory="100"
         ></item>
 
-
+    <item android:id="@+id/addName"
+        android:title="Add Name"
+        android:orderInCategory="100"
+        ></item>
 
 
 

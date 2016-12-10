@@ -30,33 +30,9 @@ public class MainActivity extends AppCompatActivity implements CoursesFragment.O
 
          DbHelper v=new DbHelper(this,"fci",null,1);
          sqLiteDatabase=v.getWritableDatabase();
-
-        Subject.createSubject("JAVA",sqLiteDatabase);
-        Subject.createSubject("C#",sqLiteDatabase);
-
-        Section.createSection("section1 ","monday","1:3","lap 4 A",2,sqLiteDatabase);
-        Section.createSection("section2 ","monday","1:3","lap 4 A",2,sqLiteDatabase);
-        Section.createSection("section3 ","monday","1:3","lap 4 A",2,sqLiteDatabase);
-        Section.createSection("section1 ","monday","1:3","lap 4 A",1,sqLiteDatabase);
-        Section.createSection("section2 ","monday","1:3","lap 4 A",2,sqLiteDatabase);
-        Section.createSection("section3 ","monday","1:3","lap 4 A",1,sqLiteDatabase);
-
-        Student.createStudent("mohamed aboali moslem salem",sqLiteDatabase);
-        Student.createStudent("ahmed aboali moslem salem",sqLiteDatabase);
-        Student.createStudent("hassan aboali moslem salem",sqLiteDatabase);
-        Student.createStudent("ahmed mohamed hassan",sqLiteDatabase);
-        Register.createRegister(1,1,1,sqLiteDatabase);
-        Register.createRegister(2,2,2,sqLiteDatabase);
-        Register.createRegister(3,2,2,sqLiteDatabase);
-        Register.createRegister(4,1,1,sqLiteDatabase);
-
-
-
-       setUI(sqLiteDatabase);
+          setUI(sqLiteDatabase);
 
     }
-
-
 
     public void setUI(SQLiteDatabase sqLiteDatabase){
 

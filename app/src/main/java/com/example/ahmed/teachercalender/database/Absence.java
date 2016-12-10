@@ -22,7 +22,7 @@ public class Absence {
     public static String TABLE_NAME="absence";
     public static String ID="absence_id";
     public static String DATE="absence_date";
-
+    public static String NAME="absence_name";
 
     private int id;
     private Date date;
@@ -48,7 +48,7 @@ public class Absence {
 
     public static void createAbsence(int id, Date date, SQLiteDatabase sqLiteDatabase){
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         ContentValues contentValues=new ContentValues();
         contentValues.put(Absence.ID,id);
         contentValues.put(Absence.DATE,dateFormat.format(date));
@@ -57,16 +57,13 @@ public class Absence {
 
 
     }
-    public static void createAbsence( Date date, SQLiteDatabase sqLiteDatabase){
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static void createAbsence( String name,Date date, SQLiteDatabase sqLiteDatabase)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         ContentValues contentValues=new ContentValues();
-
         contentValues.put(Absence.DATE,dateFormat.format(date));
-
+        contentValues.put(Absence.NAME,name);
         sqLiteDatabase.insert(TABLE_NAME,null,contentValues);
-
-
     }
 
 

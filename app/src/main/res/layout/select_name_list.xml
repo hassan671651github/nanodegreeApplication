@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/student_name_select_name_list"
+            android:textSize="20dp"
+            android:layout_weight=".8" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"
+            android:id="@+id/checkBox"
+            android:layout_weight=".2"
+            android:checked="false"
+            android:enabled="false"
+            android:focusableInTouchMode="false"
+            android:shadowColor="#ec1a1a"
+            android:textColor="#f30808"
+            android:backgroundTint="#ffffff"
+            android:breakStrategy="simple"
+            android:background="#a8f491" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=" "
+        android:id="@+id/student_id_select_name_list"
+        android:textSize="30dp"
+        android:textColor="#f10000" />
+
+</LinearLayout>

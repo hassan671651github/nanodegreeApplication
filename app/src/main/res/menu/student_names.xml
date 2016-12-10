@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/add_quizz"
-        android:title="Add Quizz"
+    <item android:id="@+id/Create_quizz"
+        android:title="Create Quizz"
         android:orderInCategory="100"
         ></item>
 
     <item android:orderInCategory="100"
-android:id="@+id/add_absence"
-        android:title="Add Absence"></item>
+android:id="@+id/Create_absence"
+        android:title="Create Absence"></item>
 
     <item android:title="Select Name"
         android:id="@+id/select_name"

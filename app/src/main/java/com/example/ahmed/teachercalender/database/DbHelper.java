@@ -27,7 +27,7 @@ Context context;
        db.execSQL("create table "+Quizz.TABLE_NAME+" (quizz_id integer primary key AUTOINCREMENT  ,quizz_name char(50) ,quizz_date date );");
        db.execSQL("create table register (student_id int references student(student_id),subject_id int references subject(subject_id),section_id int references section(section_id),primary key(student_id,subject_id));");
 
-        db.execSQL("create table absence (absence_id integer primary key AUTOINCREMENT ,absence_date date);");
+        db.execSQL("create table absence (absence_id integer primary key AUTOINCREMENT ,absence_date date,absence_name char(20));");
         db.execSQL("create table student_absence(student_id int  references student(student_id),subject_id int references subject(subject_id),absence_id int references absence(absence_id),value boolean,primary key(student_id,absence_id,subject_id),unique(student_id,absence_id));");
        db.execSQL("create table student_quizz(student_id int references student(student_id),subject_id int references subject(subject_id),degree double,quizz_id int references quizz(quizz_id),primary key(student_id,quizz_id ,subject_id),unique(student_id,quizz_id));");
 

@@ -9,17 +9,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.ahmed.teachercalender.Adapters.sectionAdapter;
@@ -28,6 +32,7 @@ import com.example.ahmed.teachercalender.database.Section;
 import com.example.ahmed.teachercalender.database.Subject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -84,10 +89,8 @@ public class SectionFragment extends Fragment {
 
 
 
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
-
         getActivity(). getMenuInflater().inflate(R.menu.section_menu, menu);
 
 
@@ -143,7 +146,71 @@ private     int courseId  =0;
         });
     }
 
+private void CreateSectionFunc(){
 
+    LayoutInflater linf = LayoutInflater.from(getActivity());
+    final View inflator = linf.inflate(R.layout.create_section_layout, null);
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+    builder.setTitle("Create Section");
+    builder.setView(inflator);
+
+    final EditText name = (EditText) inflator.findViewById(R.id.name_createSection);
+    final EditText day = (EditText) inflator.findViewById(R.id.day_createSection);
+    final EditText from = (EditText) inflator.findViewById(R.id.from_createSection);
+    final EditText to = (EditText) inflator.findViewById(R.id.to_createSection);
+    final EditText location = (EditText) inflator.findViewById(R.id.location_createSection);
+
+    final Button save = (Button) inflator.findViewById(R.id.save_createSection);
+    final Button changeImg = (Button) inflator.findViewById(R.id.changeImg_createSection);
+    final ImageView img = (ImageView) inflator.findViewById(R.id.CourseImg_CreateCourse);
+    save.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(!name.getText().toString().trim().isEmpty()&&!day.getText().toString().trim().isEmpty()
+                    &&!from.getText().toString().trim().isEmpty()&&!to.getText().toString().trim().isEmpty()
+                    &&!location.getText().toString().trim().isEmpty()) {
+
+                Section.createSection(name.getText().toString(),day.getText().toString(),
+                        from.getText()+":"+to.getText(),location.getText().toString(),courseId,sqLiteDatabase);
+                Toast.makeText(getActivity(),"section created succesfuly",Toast.LENGTH_SHORT).show();
+                name.setText(""); from.setText("");
+                day.setText("");to.setText(""); location.setText("");
+            }
+            else{Toast.makeText(getActivity(),"you must fill all fields",Toast.LENGTH_SHORT).show();}
+
+        }
+    });
+
+    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton)
+        {
+            if(!name.getText().toString().trim().isEmpty()&&!day.getText().toString().trim().isEmpty()
+                    &&!from.getText().toString().trim().isEmpty()&&!to.getText().toString().trim().isEmpty()
+                    &&!location.getText().toString().trim().isEmpty()) {
+
+                Section.createSection(name.getText().toString(),day.getText().toString(),
+                        from.getText()+":"+to.getText(),location.getText().toString(),courseId,sqLiteDatabase);
+                Toast.makeText(getActivity(),"section created succesfuly",Toast.LENGTH_SHORT).show();
+                name.setText(""); from.setText("");
+                day.setText("");to.setText(""); location.setText("");
+            }
+            else{Toast.makeText(getActivity(),"you must fill all fields",Toast.LENGTH_SHORT).show();}
+            LoadData();
+        }
+    });
+
+    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+
+            LoadData();
+        }
+    });
+
+    builder.show();
+
+}
 
     /*************************************************************************************************************/
     @Override
@@ -187,79 +254,17 @@ private     int courseId  =0;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId()==R.id.showdetails){
-            sectionAdapter sectionAdapter = new sectionAdapter(sectionArrayList, getActivity(),true);
+        if (item.getItemId() == R.id.showdetails) {
+            sectionAdapter sectionAdapter = new sectionAdapter(sectionArrayList, getActivity(), true);
 
             gridView.setAdapter(sectionAdapter);
         }
 
-        if(item.getItemId()==R.id.create_section)
-        {
+        if (item.getItemId() == R.id.create_section) {
 
-            LayoutInflater linf = LayoutInflater.from(getActivity());
-            final View inflator = linf.inflate(R.layout.create_section_layout, null);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            builder.setTitle("Create Section");
-            builder.setView(inflator);
-
-            final EditText name = (EditText) inflator.findViewById(R.id.name_createSection);
-            final EditText day = (EditText) inflator.findViewById(R.id.day_createSection);
-            final EditText from = (EditText) inflator.findViewById(R.id.from_createSection);
-            final EditText to = (EditText) inflator.findViewById(R.id.to_createSection);
-            final EditText location = (EditText) inflator.findViewById(R.id.location_createSection);
-
-            final Button save = (Button) inflator.findViewById(R.id.save_createSection);
-            final Button changeImg = (Button) inflator.findViewById(R.id.changeImg_createSection);
-            final ImageView img = (ImageView) inflator.findViewById(R.id.CourseImg_CreateCourse);
-            save.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!name.getText().toString().trim().isEmpty()&&!day.getText().toString().trim().isEmpty()
-                            &&!from.getText().toString().trim().isEmpty()&&!to.getText().toString().trim().isEmpty()
-                            &&!location.getText().toString().trim().isEmpty()) {
-
-                        Section.createSection(name.getText().toString(),day.getText().toString(),
-                                from.getText()+":"+to.getText(),location.getText().toString(),courseId,sqLiteDatabase);
-                        Toast.makeText(getActivity(),"section created succesfuly",Toast.LENGTH_SHORT).show();
-                        name.setText(""); from.setText("");
-                        day.setText("");to.setText(""); location.setText("");
-                    }
-                    else{Toast.makeText(getActivity(),"you must fill all fields",Toast.LENGTH_SHORT).show();}
-
-                }
-            });
-
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton)
-                {
-                    if(!name.getText().toString().trim().isEmpty()&&!day.getText().toString().trim().isEmpty()
-                            &&!from.getText().toString().trim().isEmpty()&&!to.getText().toString().trim().isEmpty()
-                            &&!location.getText().toString().trim().isEmpty()) {
-
-                        Section.createSection(name.getText().toString(),day.getText().toString(),
-                                from.getText()+":"+to.getText(),location.getText().toString(),courseId,sqLiteDatabase);
-                        Toast.makeText(getActivity(),"section created succesfuly",Toast.LENGTH_SHORT).show();
-                        name.setText(""); from.setText("");
-                        day.setText("");to.setText(""); location.setText("");
-                    }
-                    else{Toast.makeText(getActivity(),"you must fill all fields",Toast.LENGTH_SHORT).show();}
-                    LoadData();
-                }
-            });
-
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-
-                    LoadData();
-                }
-            });
-
-            builder.show();
+            CreateSectionFunc();
 
         }
-
 
 
 

@@ -44,6 +44,13 @@ public static void create_student_quizz(int subject_id, int student_id, int quiz
 
 
 }
+    public static void updateDegree(int subject_id, int student_id, int quizz_id, float value, SQLiteDatabase sqLiteDatabase){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DEGREE, value);
+        String whereClause = STUDENT_ID + "=" + student_id + " and " + SUBJECT_ID + "=" + subject_id + " and " + QUIZZ_ID + "=" + quizz_id;
+        sqLiteDatabase.update(TABLE_NAME, contentValues, whereClause, null);
+    }
     public int getStudent_id() {
         return student_id;
     }

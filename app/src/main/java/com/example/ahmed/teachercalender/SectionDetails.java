@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.FrameLayout;
 
 import com.example.ahmed.teachercalender.Interfaces.connection;
@@ -31,11 +32,14 @@ boolean isTowPane=false;
         {
             section_id=getIntent().getExtras().getInt("sectionId");
             subject_id=getIntent().getExtras().getInt("courseId");
+
             StudentNames studentNames=new StudentNames();
             studentNames.setConnection(this);
             studentNames.setArguments(getIntent().getExtras());
+
             StudentDetails studentDetails=new StudentDetails();
             studentDetails.setConnection(this);
+            studentDetails.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().replace(R.id.frame1SectionDetails, studentNames).commit();
             getFragmentManager().beginTransaction().replace(R.id.frame2SectionDetails, studentDetails).commit();
 
@@ -99,6 +103,13 @@ boolean isTowPane=false;
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.section_details_menu,menu);
+        return super.onCreateOptionsMenu(menu);
 
     }
 }

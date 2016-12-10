@@ -1,25 +1,45 @@
 package com.example.ahmed.teachercalender;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ahmed.teachercalender.Adapters.StudentNamesAdapter;
 import com.example.ahmed.teachercalender.Interfaces.connection;
+import com.example.ahmed.teachercalender.database.Absence;
 import com.example.ahmed.teachercalender.database.DbHelper;
-import com.example.ahmed.teachercalender.database.Section;
+import com.example.ahmed.teachercalender.database.Quizz;
+import com.example.ahmed.teachercalender.database.Register;
 import com.example.ahmed.teachercalender.database.Student;
+import com.example.ahmed.teachercalender.database.Student_absence;
+import com.example.ahmed.teachercalender.database.student_quizz;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 /**
@@ -86,47 +106,45 @@ public class StudentNames extends Fragment {
 
          this.con=con;
      }
+private void loadData(){
+    String query = "select student.student_name, student.student_id from student,register " +
+            "where student.student_id=register.student_id and register.subject_id= " + subjectId + " and register.section_id="+sectionId+";";
+    studentArrayList=new ArrayList<>();
+    Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+        Student student=new Student();
+        student.setName(cursor.getString(cursor.getColumnIndex(Student.STUDENT_NAME)));
+        student.setId(cursor.getInt(cursor.getColumnIndex(Student.STUDENT_ID)));
+        studentArrayList.add(student);
+    }
 
+
+    StudentNamesAdapter studentNamesAdapter = new StudentNamesAdapter(studentArrayList, getActivity());
+    listView.setAdapter(studentNamesAdapter);
+
+
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            con.connect(studentArrayList.get(position).getId(),"studentNames");
+
+        }
+    });
+}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
      View fragment=   inflater.inflate(R.layout.fragment_student_names, container, false);
 
+               setHasOptionsMenu(true)   ;
 
-            studentArrayList=new ArrayList<>();
             listView=(ListView)fragment.findViewById(R.id.studentNamesList);
             DbHelper v = new DbHelper(getActivity(), "fci", null, 1);
             sqLiteDatabase = v.getWritableDatabase();
             Bundle bundle = getArguments();
             sectionId = bundle.getInt("sectionId");
             subjectId = bundle.getInt("courseId");
-        Toast.makeText(getActivity(),sectionId+"",Toast.LENGTH_LONG).show();
-            String query = "select student.student_name, student.student_id from student,register " +
-          "where student.student_id=register.student_id and register.subject_id= " + subjectId + " and register.section_id="+sectionId+";";
-
-            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-               Student student=new Student();
-                student.setName(cursor.getString(cursor.getColumnIndex(Student.STUDENT_NAME)));
-                student.setId(cursor.getInt(cursor.getColumnIndex(Student.STUDENT_ID)));
-                 studentArrayList.add(student);
-            }
-
-        Student vdd=new Student();
-        vdd.setName("ffffffffffffffffffff");
-        vdd.setId(5);
-        studentArrayList.add(vdd);
-            StudentNamesAdapter studentNamesAdapter = new StudentNamesAdapter(studentArrayList, getActivity());
-            listView.setAdapter(studentNamesAdapter);
-
-
-listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        con.connect(studentArrayList.get(position).getId(),"studentNames");
-
-    }
-});
+            loadData();
 
 
         return fragment;
@@ -169,5 +187,244 @@ listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+
+        getActivity(). getMenuInflater().inflate(R.menu.student_names, menu);
+
+    }
+    CalendarView calendarView;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId()==R.id.Create_quizz) {
+           MenuFunc(true,false);
+        }
+
+        if(item.getItemId()==R.id.Create_absence) {
+            MenuFunc(false,true);
+
+        }
+        if (item.getItemId() == R.id.select_name) {
+            LayoutInflater linf = LayoutInflater.from(getActivity());
+            final View inflator = linf.inflate(R.layout.select_or_addnew, null);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            Button select = (Button) inflator.findViewById(R.id.select_exit);
+            Button add = (Button) inflator.findViewById(R.id.add_new);
+            select.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectStudentFun();
+                }
+            });
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addStudentFunc();
+                }
+            });
+            builder.setTitle("Add Student");
+            builder.setView(inflator);
+            builder.show();
+
+        }
+
+
+
+        return super.onOptionsItemSelected(item);
+    }
+    private void MenuFunc(final boolean quizz, final boolean absence){
+
+
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View view = inflater.inflate(R.layout.create_quizz_layout, null);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view);
+        calendarView=(CalendarView)view.findViewById(R.id.calendarView);
+        calendarView.setVisibility(View.GONE);
+        final TextView Name=(TextView)view.findViewById(R.id.creat_quizzName);
+        final  TextView date=(TextView) view.findViewById(R.id.QuizzDate);
+        Button chosseDate=(Button)view.findViewById(R.id.chosse);
+        final Date dateNow=new Date();
+        date.setText(new SimpleDateFormat("dd-MM-yyyy").format(dateNow));
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Name.getText().toString().trim().isEmpty())
+                    Toast.makeText(getActivity(), "Name Can Not Be Empty", Toast.LENGTH_LONG).show();
+                else {
+                    if(!studentArrayList.isEmpty()) {
+                        if(quizz)
+                        {
+                            Quizz.createQuizz(Name.getText().toString(), dateNow, sqLiteDatabase);
+                            String query = "select max(" + Quizz.QUIZZ_ID + ")" + " as id from " + Quizz.TABLE_NAME + ";";
+                            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+                            cursor.moveToFirst();
+                            int id = cursor.getInt(cursor.getColumnIndex("id"));
+                            for (int i = 0; i < studentArrayList.size(); i++) {
+                                student_quizz.create_student_quizz(subjectId, studentArrayList.get(i).getId(), id, 0, sqLiteDatabase);
+                            }
+                            Toast.makeText(getActivity(),"QUIZZ CREATED SUCCESFULLY",Toast.LENGTH_LONG).show();
+                        }
+                        if(absence)
+                        {
+                            Absence.createAbsence(Name.getText().toString(), dateNow, sqLiteDatabase);
+                            String query = "select max(" + Absence.ID+ ")" + " as id from " + Absence.TABLE_NAME + ";";
+                            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+                            cursor.moveToFirst();
+                            int id = cursor.getInt(cursor.getColumnIndex("id"));
+                            for (int i = 0; i < studentArrayList.size(); i++) {
+                                Student_absence.cretae_student_absence(studentArrayList.get(i).getId(),id,subjectId,false, sqLiteDatabase);
+                            }
+                            Toast.makeText(getActivity(),"ABSENCE CREATED SUCCESFULLY",Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        chosseDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                calendarView.setVisibility(View.VISIBLE);
+            }
+        });
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                calendarView.setVisibility(View.GONE);
+
+                Calendar cal = new GregorianCalendar(year,month,dayOfMonth);
+                dateNow.setTime(cal.getTimeInMillis());
+                date.setText(new SimpleDateFormat("dd-MM-yyyy").format(dateNow));
+
+            }
+        });
+        builder.show();
+
+    }
+   private  void selectStudentFun(){
+    LayoutInflater linf = LayoutInflater.from(getActivity());
+    final  View inflator = linf.inflate(R.layout.select_name_layout, null);
+    String  query = "select * from student ;";
+   final  ArrayList<Student>selectList=new ArrayList<>();
+    ArrayList<String>stringlist=new ArrayList<>();
+    Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+    for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+        Student student=new Student();
+        student.setName(cursor.getString(cursor.getColumnIndex(Student.STUDENT_NAME)));
+        student.setId(cursor.getInt(cursor.getColumnIndex(Student.STUDENT_ID)));
+        selectList.add(student);
+        stringlist.add(student.getName()+"\n"+student.getId());
+    }
+    final  ListView listView=(ListView)inflator.findViewById(R.id.SelectNameList);
+     listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+     listView.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, stringlist));
+    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    builder.setTitle("Add Student");
+    builder.setView(inflator);
+
+   builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+       @Override
+       public void onClick(DialogInterface dialog, int which) {
+           SparseBooleanArray checked = listView.getCheckedItemPositions();
+           for (int i=0;i<selectList .size();i++) {
+               if (checked.get(i)) {
+                Register.createRegister(selectList.get(i).getId(),subjectId,sectionId,sqLiteDatabase);
+
+               }
+
+           }
+           checked=null;
+           loadData();
+       }
+   });
+    builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+        }
+    });
+
+
+    builder.show();
+}
+    private  void addStudentFunc(){
+
+        LayoutInflater linf = LayoutInflater.from(getActivity());
+        final View inflator = linf.inflate(R.layout.create_student, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Add Student");
+        builder.setView(inflator);
+
+        final EditText name = (EditText) inflator.findViewById(R.id.create_student_name);
+        final Button save = (Button) inflator.findViewById(R.id.cretae_student_save);
+        final Button changeImg = (Button) inflator.findViewById(R.id.create_student_change_img);
+        final ImageView img = (ImageView) inflator.findViewById(R.id.create_student_img);
+        final EditText id=(EditText)inflator.findViewById(R.id.cretae_student_ID);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!name.getText().toString().trim().isEmpty() && !id.getText().toString().trim().isEmpty())
+                {
+                    try {
+                        int x = Integer.parseInt(id.getText().toString().trim());
+                        Student.createStudent(x, name.getText().toString(), sqLiteDatabase);
+                        Register.createRegister(x,subjectId,sectionId,sqLiteDatabase);
+                        Toast.makeText(getActivity(), "student created succesfuly", Toast.LENGTH_SHORT).show();
+                        name.setText("");
+                        id.setText("");
+                    }
+                    catch (Exception ex){ Toast.makeText(getActivity(),"ID must be integer",Toast.LENGTH_SHORT).show();}
+                }
+                else
+                    Toast.makeText(getActivity(),"YOU MUST FILL ALL FIELDS",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton)
+            {
+                if(!name.getText().toString().trim().isEmpty() && !id.getText().toString().trim().isEmpty())
+                {
+                    try {
+                        int x = Integer.parseInt(id.getText().toString().trim());
+                        Student.createStudent(x, name.getText().toString(), sqLiteDatabase);
+                        Register.createRegister(x,subjectId,sectionId,sqLiteDatabase);
+                        Toast.makeText(getActivity(), "student created succesfuly", Toast.LENGTH_SHORT).show();
+                        name.setText("");
+                        id.setText("");
+                    }
+                    catch (Exception ex){ Toast.makeText(getActivity(),"ID must be integer",Toast.LENGTH_SHORT).show();}
+                }
+                else
+                    Toast.makeText(getActivity(),"YOU MUST FILL ALL FIELDS",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+
+            }
+        });
+
+        builder.show();
     }
 }

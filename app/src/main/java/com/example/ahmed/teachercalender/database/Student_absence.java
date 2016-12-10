@@ -2,6 +2,7 @@ package com.example.ahmed.teachercalender.database;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 /**
  * Created by Ahmed on 09/11/2016.
@@ -20,7 +21,7 @@ public class Student_absence {
     public static String STUDENT_ID="student_id";
     public static String SUBJECT_ID="subject_id";
     public static String ABSENCE_ID="absence_id";
-    public static String VALUE="student_value";
+    public static String VALUE="value";
     public static String TABLE_NAME="student_absence";
 
     private boolean value;
@@ -42,6 +43,13 @@ public static void cretae_student_absence(int student_id, int absence_id, int su
 
 
 }
+    public  static boolean updateValue(int student_id,int subject_id,int absence_id,boolean value,SQLiteDatabase sqLiteDatabase) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Student_absence.VALUE, value);
+        String whereClause = STUDENT_ID + "=" + student_id + " and " + SUBJECT_ID + "=" + subject_id + " and " + ABSENCE_ID + "=" + absence_id;
+        sqLiteDatabase.update(TABLE_NAME, contentValues, whereClause, null);
+        return true;
+    }
     public boolean isValue() {
         return value;
     }

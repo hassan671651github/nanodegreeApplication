@@ -17,17 +17,10 @@ public class StudentDetailsActivity extends AppCompatActivity  implements connec
          studentDetails.setArguments(getIntent().getExtras());
          getFragmentManager().beginTransaction().replace(R.id.activity_student_details, studentDetails).commit();
 
-
-
-
-
     }
 
     @Override
     public void connect(int id, String sender) {
-
-
-
 
     }
 }
